@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class TikTok
 {
-    private $services = ['auth', 'authorization', 'seller', 'order', 'product', 'event', 'return', 'finance'];
+    private $services = ['auth', 'authorization', 'seller', 'order', 'product', 'event', 'return', 'finance', 'audit'];
 
     private ?TiktokShop $shop = null;
 
@@ -38,8 +38,13 @@ class TikTok
 
     public function __call($method, $arguments)
     {
-        throw_if(!$this->getAppKey(), LogicException::class, __('Missing App Key.'));
-        throw_if(!$this->getAppSecret(), LogicException::class, __('Missing App Secret.'));
+        $property_name = strtolower(Str::snake($method));
+
+        // Local array audits are credential-free and never call TikTok endpoints.
+        if ($property_name !== 'audit') {
+            throw_if(!$this->getAppKey(), LogicException::class, __('Missing App Key.'));
+            throw_if(!$this->getAppSecret(), LogicException::class, __('Missing App Secret.'));
+        }
 
         if (count($arguments) > 0) {
             $argumentCollection = collect($arguments);
@@ -77,8 +82,6 @@ class TikTok
                 }
             }
         }
-
-        $property_name = strtolower(Str::snake($method));
 
         if (in_array($property_name, $this->services)) {
             $reformat_property_name = ucfirst(Str::camel($method));

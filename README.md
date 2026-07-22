@@ -1,4 +1,82 @@
-# Laravel TikTok
+# TikTok Shop Read-only Audit
+
+This fork adds a read-only audit layer to the MIT-licensed
+[`laraditz/tiktok`](https://github.com/laraditz/tiktok) package. The upstream
+Laravel client, copyright notice, license, history, and `upstream` Git remote
+are preserved.
+
+The audit accepts normalized arrays or responses already collected through an
+authorized TikTok Shop app. It does **not** update products, inventory, orders,
+refunds, webhooks, or finance records.
+
+## Audit input
+
+Pass any combination of these top-level arrays:
+
+- `products`: product, category, image, SKU, price, inventory, and audit status;
+- `orders`: all orders in one declared time window, including status and update time;
+- `returns` or `refunds`: return/refund ID, order ID, reason, status, and amount;
+- `finance`: refund transactions used only for reconciliation;
+- `as_of`: ISO-8601 report time used to identify stale open orders.
+
+```php
+use Laraditz\TikTok\TikTok;
+
+$payload = json_decode(
+    file_get_contents(__DIR__ . '/examples/audit/sample-shop.json'),
+    true,
+    512,
+    JSON_THROW_ON_ERROR
+);
+
+$report = TikTok::make(app_key: '', app_secret: '')
+    ->audit()
+    ->analyze($payload);
+```
+
+Existing authorized API responses can be passed without flattening their
+`data.products`, `data.orders`, `data.returns`, or `data.transactions`
+envelopes:
+
+```php
+$report = TikTok::audit()->analyzeAuthorizedResponses([
+    'products' => $productListResponse,
+    'orders' => $allOrdersResponse,
+    'returns' => $returnListResponse,
+    'finance' => $transactionResponse,
+    'as_of' => now()->toIso8601String(),
+]);
+```
+
+Live collection still requires a TikTok Shop Partner app, seller authorization,
+the relevant read scopes, an access token, and shop cipher. Collect every page
+for the same time window before calculating cancellation or refund rates.
+
+## Audit output and evidence boundary
+
+Issues are sorted by `P0`, `P1`, and `P2` and use the business format:
+
+- `发生什么` — the measured problem;
+- `怎么改` — the human-reviewed action;
+- `什么算完成` — the acceptance condition.
+
+The four dimensions are `catalog`, `health`, `fulfillment`, and `refund`.
+Customer names, addresses, and messages are not copied into issue evidence.
+When the refund dataset or full order denominator is absent,
+`refund_order_rate` is `null` and `boundaries` contains
+`refund_rate_unavailable`; the tool never estimates it.
+
+Run the focused test and then the full upstream suite:
+
+```bash
+composer install
+vendor/bin/phpunit tests/Unit/Services/AuditServiceTest.php
+vendor/bin/phpunit
+```
+
+---
+
+# Laravel TikTok (upstream package)
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laraditz/tiktok.svg?style=flat-square)](https://packagist.org/packages/laraditz/tiktok)
 [![Total Downloads](https://img.shields.io/packagist/dt/laraditz/tiktok.svg?style=flat-square)](https://packagist.org/packages/laraditz/tiktok)

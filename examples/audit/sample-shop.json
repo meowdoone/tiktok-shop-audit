@@ -1,0 +1,51 @@
+{
+  "as_of": "2026-07-22T00:00:00Z",
+  "products": [
+    {
+      "id": "P-100",
+      "title": "Insulated Hydration Bottle",
+      "status": "ACTIVATE",
+      "category_id": "CAT-10",
+      "main_images": [{ "uri": "synthetic://product/P-100/main" }],
+      "skus": [
+        {
+          "id": "SKU-100-BLUE",
+          "seller_sku": "BOTTLE-BLUE",
+          "price": { "amount": "29.90" },
+          "inventory": [{ "quantity": 24 }]
+        }
+      ]
+    },
+    {
+      "id": "P-200",
+      "title": "",
+      "status": "SUSPENDED",
+      "category_id": null,
+      "main_images": [],
+      "audit": { "status": "FAILED" },
+      "skus": [
+        {
+          "id": "SKU-200-DEFAULT",
+          "seller_sku": "BAG-DEFAULT",
+          "price": { "amount": "0" },
+          "inventory": [{ "quantity": 0 }]
+        }
+      ]
+    }
+  ],
+  "orders": [
+    { "id": "O-1", "status": "COMPLETED", "create_time": "2026-07-01T08:00:00Z", "update_time": "2026-07-03T08:00:00Z" },
+    { "id": "O-2", "status": "COMPLETED", "create_time": "2026-07-02T08:00:00Z", "update_time": "2026-07-04T08:00:00Z" },
+    { "id": "O-3", "status": "CANCELLED", "create_time": "2026-07-03T08:00:00Z", "update_time": "2026-07-03T12:00:00Z" },
+    { "id": "O-4", "status": "IN_TRANSIT", "create_time": "2026-07-04T08:00:00Z", "update_time": "2026-07-05T08:00:00Z" },
+    { "id": "O-5", "status": "COMPLETED", "create_time": "2026-07-05T08:00:00Z", "update_time": "2026-07-07T08:00:00Z" }
+  ],
+  "returns": [
+    { "id": "R-1", "order_id": "O-1", "status": "REFUND_COMPLETED", "reason": "DAMAGED", "refund_amount": { "amount": "30.00" } },
+    { "id": "R-2", "order_id": "O-2", "status": "REFUND_COMPLETED", "reason": "DAMAGED", "refund_amount": { "amount": "20.00" } }
+  ],
+  "finance": [
+    { "id": "F-1", "order_id": "O-1", "type": "REFUND", "amount": "-30.00" },
+    { "id": "F-2", "order_id": "O-2", "type": "REFUND", "amount": "-10.00" }
+  ]
+}
