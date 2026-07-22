@@ -1,11 +1,11 @@
 {
   "name": "laraditz/tiktok",
-  "description": "Laravel package for interacting with TikTok API.",
+  "description": "Laravel TikTok Shop client with a read-only audit layer.",
   "keywords": [
     "laraditz",
     "tiktok"
   ],
-  "homepage": "https://github.com/laraditz/tiktok",
+  "homepage": "https://github.com/meowdoone/tiktok-shop-audit",
   "license": "MIT",
   "type": "library",
   "authors": [
