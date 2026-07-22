@@ -64,7 +64,18 @@ abstract class TestCase extends BaseTestCase
 
     protected function createAccessToken(array $attributes = [])
     {
-        $shop = isset($attributes['subjectable_id']) ? null : $this->createTikTokShop();
+        $shop = isset($attributes['subjectable_id'])
+            ? null
+            : \Laraditz\TikTok\Models\TiktokShop::firstOrCreate(
+                ['id' => 'test_shop_id'],
+                [
+                    'code' => 'test_shop_code',
+                    'name' => 'Test Shop',
+                    'cipher' => 'test_cipher',
+                    'region' => 'MY',
+                    'seller_type' => 'test_seller',
+                ]
+            );
 
         return \Laraditz\TikTok\Models\TiktokAccessToken::create(array_merge([
             'subjectable_id' => $shop?->id ?? $attributes['subjectable_id'],

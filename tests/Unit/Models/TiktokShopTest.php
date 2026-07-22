@@ -63,12 +63,13 @@ class TiktokShopTest extends TestCase
         $this->assertEquals('tiktok_shops', $shop->getTable());
     }
 
-    public function test_shop_uses_incrementing_primary_key()
+    public function test_shop_uses_string_primary_key()
     {
         $shop = new TiktokShop();
 
-        $this->assertTrue($shop->getIncrementing());
+        $this->assertFalse($shop->getIncrementing());
         $this->assertEquals('id', $shop->getKeyName());
+        $this->assertEquals('string', $shop->getKeyType());
     }
 
     public function test_shop_can_be_found_by_id()
